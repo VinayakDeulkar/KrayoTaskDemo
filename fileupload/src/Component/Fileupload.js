@@ -52,6 +52,7 @@ export default function Fileupload() {
                     .then(res => {
                         setUploadedData(res.data)
                     })
+                document.getElementById('file').value = ''
             })
 
     }
