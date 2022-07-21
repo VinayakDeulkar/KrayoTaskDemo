@@ -25,8 +25,9 @@ export default function Fileupload() {
 
     //Logout Function
     const Logout = () => {
+        
         localStorage.removeItem('_token')
-        navigate('/')
+        window.open(`${process.env.REACT_APP_URL}auth/logout`, "_self")
     }
 
     const FileDownload = async (key) => {
@@ -45,7 +46,7 @@ export default function Fileupload() {
         let formData = new FormData()
         const data = JSON.parse(localStorage.getItem('_token'))
         formData.append('file', document.getElementById('file').files[0])
-        formData.append('googleId', data.googleId)
+        formData.append('googleId', data.id)
         uploadfile(formData)
             .then((response) => {
                 getfiles(data)

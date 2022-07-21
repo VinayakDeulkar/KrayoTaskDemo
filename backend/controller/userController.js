@@ -33,7 +33,7 @@ const GetFiles = async (req, res) => {
             if (err) console.log(err)
             else {
                 respones.Contents.map((ele) => {
-                    const isFound = ele.Key.includes(req.body.googleId)
+                    const isFound = ele.Key.includes(req.body.id)
                     if (isFound) {
                         dataList.push(ele.Key)
                     }
