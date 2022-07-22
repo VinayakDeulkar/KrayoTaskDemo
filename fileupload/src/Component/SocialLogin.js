@@ -12,10 +12,8 @@ export default function SocialLogin() {
     }
     const getUser = async () => {
         try {
-            console.log(localStorage.getItem('_token'));
             CheckUser()
                 .then(response => {
-                    console.log(response.data.user);
                     if (response.data.user && localStorage.getItem('_token') == undefined) {
                         localStorage.setItem('_token', JSON.stringify(response.data.user))
                         navigate('/fileUpload')

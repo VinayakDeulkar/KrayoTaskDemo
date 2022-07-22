@@ -25,7 +25,6 @@ export default function Fileupload() {
 
     //Logout Function
     const Logout = () => {
-        
         localStorage.removeItem('_token')
         window.open(`${process.env.REACT_APP_URL}auth/logout`, "_self")
     }

@@ -33,6 +33,10 @@ router.get('/google/callback', passport.authenticate("google", {
 
 router.get("/logout", (req, res) => {
     req.logOut();
+    res.clearCookie('connect.sid', {
+        path: process.env.NODE_CLIENTURL
+    })
+    req.session = null
     res.redirect(process.env.NODE_CLIENTURL)
 })
 module.exports = router;
