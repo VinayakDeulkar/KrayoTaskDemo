@@ -6,8 +6,7 @@ const UploadFile = async (req, res) => {
         const params = {
             Bucket: process.env.NODE_BUCKETNAME,
             Key: fileName,
-            Body: req.file.buffer,
-            ACL: 'public-read',
+            Body: req.file.buffer
         };
         myBucket.putObject(params, (err, respones) => {
             if (err) {
@@ -26,19 +25,13 @@ const GetFiles = async (req, res) => {
     try {
         const dataList = []
         const params = {
-            Bucket: process.env.NODE_BUCKETNAME
+            Bucket: process.env.NODE_BUCKETNAME,
+            Prefix: req.body.id
         }
-
         const resData = myBucket.listObjects(params, (err, respones) => {
             if (err) console.log(err)
             else {
-                respones.Contents.map((ele) => {
-                    const isFound = ele.Key.includes(req.body.id)
-                    if (isFound) {
-                        dataList.push(ele.Key)
-                    }
-                })
-                return res.status(200).send(dataList)
+                return res.status(200).send(respones.Contents)
             }
         })
 
@@ -49,12 +42,32 @@ const GetFiles = async (req, res) => {
 }
 const DownloadFile = async (req, res) => {
     try {
-        const link = `https://${process.env.NODE_BUCKETNAME}.s3.${process.env.NODE_REGION}.amazonaws.com/${req.body.dataKey}`
-
-        return res.send({ data: link })
+        const param = {
+            Bucket: process.env.NODE_BUCKETNAME,
+            Key: req.body.dataKey,
+            Expires: 20,
+        };
+        const url = myBucket.getSignedUrl('getObject', param)
+        return res.send(url)
     }
     catch (err) {
         console.log(err);
     }
 }
-module.exports = { UploadFile, GetFiles, DownloadFile }
+const getSignedUrl = async (req, res) => {
+    try {
+        await myBucket.createPresignedPost({
+            Fields: {
+                key: "",
+            },
+            Expires: 30,
+            Bucket: process.env.NODE_BUCKETNAME,
+        }, (err, signed) => {
+            res.json("login success")
+        })
+    }
+    catch (err) {
+        console.log(err);
+    }
+}
+module.exports = { UploadFile, GetFiles, DownloadFile, getSignedUrl }

@@ -15,3 +15,7 @@ export function downloadFile(data) {
 export function CheckUser() {
     return axios.get(`${process.env.REACT_APP_URL}auth/login/success`, { withCredentials: true })
 }
+
+export function GetSignedUrl() {
+    return axios.get(`${process.env.REACT_APP_URL}user/get-signed-url`)
+}

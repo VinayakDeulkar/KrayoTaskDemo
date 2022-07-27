@@ -3,13 +3,14 @@ import { Form, Button, Row, Col, Table, Navbar, Nav } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import myBucket from '../AwsConfig'
-import { downloadFile, getfiles, uploadfile } from '../Config/awsService'
+import { downloadFile, getfiles, GetSignedUrl, uploadfile } from '../Config/awsService'
 export default function Fileupload() {
     const [selectedFile, setselectedFile] = useState(null)
     const [UploadedData, setUploadedData] = useState([])
     const [Token, setToken] = useState(null)
     const navigate = useNavigate()
     useEffect(() => {
+        GetSignedUrl()
         setToken(JSON.parse(localStorage.getItem('_token')))
         const data = JSON.parse(localStorage.getItem('_token'))
         getfiles(data)
@@ -30,12 +31,11 @@ export default function Fileupload() {
     }
 
     const FileDownload = async (key) => {
+        console.log('click');
+        console.log(key);
         downloadFile({ dataKey: key })
             .then((res) => {
-                const link = document.createElement('a');
-                link.href = res.data.data;
-                document.body.appendChild(link);
-                link.click();
+                window.open(res.data, '_self')
             })
 
     }
@@ -61,7 +61,7 @@ export default function Fileupload() {
             <Navbar bg='dark' expand='lg' className='text-light'>
                 <Navbar.Brand className='text-light'> Krayo File Upload</Navbar.Brand>
                 <Nav className='ms-auto me-3'>
-                    <span className='p-2'>{Token?.email}</span>
+                    <span className='p-2'>{Token?.emails[0].value}</span>
                     <Button variant='dark' onClick={Logout}>LogOut</Button>
                 </Nav>
             </Navbar>
@@ -82,15 +82,15 @@ export default function Fileupload() {
                 <Col lg={3} />
             </Row>
             <Row className='ms-1 me-1 '>
-                <h4 className='text-center'>Uploaded files By {Token?.email}</h4>
+                <h4 className='text-center'>Uploaded files By {Token?.emails[0].value}</h4>
                 <Col lg={12}>
                     <Table>
                         <thead>
                         </thead>
                         <tbody>
                             {UploadedData?.map((ele) =>
-                                <tr key={ele}>
-                                    <td onClick={() => FileDownload(ele)}>{ele}</td>
+                                <tr key={ele.Key}>
+                                    <td onClick={() => FileDownload(ele.Key)}>{ele.Key}</td>
                                 </tr>
                             )}
                         </tbody>
