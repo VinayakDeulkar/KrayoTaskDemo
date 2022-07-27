@@ -45,7 +45,7 @@ const DownloadFile = async (req, res) => {
         const param = {
             Bucket: process.env.NODE_BUCKETNAME,
             Key: req.body.dataKey,
-            Expires: 20,
+            Expires: 10,
         };
         const url = myBucket.getSignedUrl('getObject', param)
         return res.send(url)

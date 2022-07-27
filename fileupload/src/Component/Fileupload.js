@@ -42,18 +42,23 @@ export default function Fileupload() {
     //Logic for Uploading File
     const fileupload = async (event) => {
         event.preventDefault();
-        let formData = new FormData()
-        const data = JSON.parse(localStorage.getItem('_token'))
-        formData.append('file', document.getElementById('file').files[0])
-        formData.append('googleId', data.id)
-        uploadfile(formData)
-            .then((response) => {
-                getfiles(data)
-                    .then(res => {
-                        setUploadedData(res.data)
-                    })
-                document.getElementById('file').value = ''
-            })
+        if(document.getElementById('file').files[0]){
+            let formData = new FormData()
+            const data = JSON.parse(localStorage.getItem('_token'))
+            formData.append('file', document.getElementById('file').files[0])
+            formData.append('googleId', data.id)
+            uploadfile(formData)
+                .then((response) => {
+                    getfiles(data)
+                        .then(res => {
+                            setUploadedData(res.data)
+                        })
+                    document.getElementById('file').value = ''
+                })
+        }
+        else{
+            alert('Select File to Upload')
+        }
 
     }
     return (
